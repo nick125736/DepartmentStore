@@ -12,10 +12,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddSingleton<DbContext>();
 builder.Services.AddScoped<IMember, MemberRepository>();
 builder.Services.AddScoped<ICounter, CounterRepository>();
+builder.Services.AddScoped<ICross, CrossRepository>();
 var app = builder.Build();
-builder.Services.AddSingleton<DbContext>();
+
 
 
 // Configure the HTTP request pipeline.
