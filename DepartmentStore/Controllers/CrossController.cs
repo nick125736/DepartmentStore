@@ -37,5 +37,44 @@ namespace DepartmentStore.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+        [HttpGet("CounterDetailsForMember/{mid}")]
+        public async Task<IActionResult> GetCounterDetailsByMemberId(int id)
+        {
+            try
+            {
+                // 取得指定 id 的會員資料
+                var counterDetails = await _cross.GetCounterDetailsByMemberId(id);
+                return Ok(new
+                {
+                    Success = true,
+                    Message = "取得指定 id 會員的所有行事曆詳細資料成功",
+                    Data = counterDetails
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+        [HttpGet("MemberDetailsForCounter/{cid}")]
+        public async Task<IActionResult> GetMemberDetailsByCounterId(Guid id)
+        {
+            try
+            {
+                // 取得指定 id 的行事曆資料
+                var memberDetails = await _cross.GetMemberDetailsByCounterId(id);
+                return Ok(new
+                {
+                    Success = true,
+                    Message = "取得指定 id 行事曆的所有會員詳細資料成功",
+                    Data = memberDetails
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
     }
 }
