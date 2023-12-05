@@ -12,6 +12,16 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors(options => 
+{ 
+    options.AddPolicy(name: "AllowAny",
+        policy => 
+        { 
+            policy.WithOrigins("https://localhost:7205","http://localhost:5249")
+            .AllowAnyOrigin();
+        });
+});
+
 builder.Services.AddSingleton<DbContext>();
 builder.Services.AddScoped<IMember, MemberRepository>();
 builder.Services.AddScoped<ICounter, CounterRepository>();
@@ -32,5 +42,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseCors("AllowAny");
 
 app.Run();
