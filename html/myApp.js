@@ -20,8 +20,11 @@ function handleNavClick(e) {
     e.preventDefault();
 
     // 切換功能區域的內容
-    if (e.target.textContent === '關於我們') {
-        switchContent('關於我們', '此系統包含會員及行事曆資訊！');
+    if (e.target.textContent === '關於我們') {    
+        const html = `
+            <img src="https://ec051.so-buy.com/ezfiles/863/1863/plugin/ec/pictures/316/m/mczh-tw800x800_small100793.jpg" alt="alternatetext">
+        `;
+        switchContent('', html);
     }
     else if (e.target.textContent === '單純顯示資料') {
         pureDisplay();
@@ -33,6 +36,8 @@ function handleNavClick(e) {
         crossTableDoubleLayer();
     }
 }
+
+
 // 建立 Axios 實例
 const axiosInstance = axios.create({
     baseURL: 'https://localhost:7205/api/',
@@ -66,7 +71,6 @@ function counterFull() {
 
 // 呈現「行事曆完整資料」在頁面中
 function show_counter_full(counter) {
-    console.log(counter);
     // 建立行事曆的 HTML 內容
     const html = `
         <table>
@@ -112,7 +116,6 @@ function memberFull() {
 }
 // 呈現「行事曆完整資料」在頁面中
 function show_member_full(member) {
-    console.log(member);
     // 建立行事曆的 HTML 內容
     const html = `
         <table>
@@ -257,7 +260,6 @@ function show_counter_add() {
         e.preventDefault();
         // 取得表單（form）所填寫的資料
         const formData = new FormData(form);
-        // console.log(formData);
         // 將表單的資料轉換成 json 格式
         const jsonData = form_data_to_json(formData);
 
@@ -272,6 +274,138 @@ function show_counter_add() {
             });
     });
 }
+// （修改）點選行事曆的「修改」按鈕時，呼叫此函式
+function update_counter(cid) {
+    // 取得行事曆資料
+    axiosInstance.get(`Counter/${cid}`)
+        .then(res => {
+            const counter = res.data.counters;
+            // 呼叫函式去呈現行事曆修改資料在頁面中
+            show_counter_update(counter);
+        })
+        .catch(err => {
+            console.error(err);
+        });
+}
+
+// （修改）呈現「行事曆修改資料」在頁面中
+function show_counter_update(counter) {
+    // 建立行事曆的 HTML 內容
+    const html = `
+    <form id="update-counter-form">
+        <table>
+            <tbody>
+                <tr>
+                    <th>名子</th>
+                    <td><input type="text" id="cname" name="cname" value="${counter.cName}" ></td>
+                </tr>
+                <tr>
+                    <th>信箱</th>                    
+                    <td><input type="text" id="cmail" name="cmail" value="${counter.cmail}"></td>
+                </tr>
+                <tr>
+                    <th>電話</th>                    
+                    <td><input type="text" id="cphone" name="cphone" value="${counter.cphone}"></td>
+                </tr>
+                <tr>
+                    <th>類型</th>
+                    <td><input type="text" id="ctype" name="ctype" value="${counter.ctype}"></td>
+                </tr>
+                <tr>
+                    <th>樓層</th>                    
+                    <td><input type="text" id="cfl" name="cfl" value="${counter.cfl}">如果失敗請使用數字+F</td>
+                </tr>     
+            </tbody>
+        </table>
+        <button type="submit" class='updateBtn'>確認修改</button>
+        </form>
+    `;
+    // 切換功能區域的內容
+    switchContent('行事曆修改資料', html);
+
+    const form = document.querySelector('#update-counter-form');
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        // 取得表單（form）所填寫的資料
+        const formData = new FormData(form);
+        // 將表單的資料轉換成 json 格式
+        const jsonData = form_data_to_json(formData);
+        // 以 put 方式連線至伺服端修改資料
+        axiosInstance.put(`Counter/${counter.cid}`, jsonData)
+            .then(res => {
+                window.alert('行事曆修改成功！');
+                counterBrief();     // 重新列出最新的資料清單
+            })
+            .catch(err => {
+                console.error(err);
+            });
+    });
+}
+
+// （刪除）點選行事曆的「刪除」按鈕時，呼叫此函式
+function delete_counter(cid) {
+    // 取得行事曆資料
+    axiosInstance.get(`Counter/${cid}`)
+        .then(res => {
+            const counter = res.data.counters;
+            // 呼叫函式去呈現行事曆刪除資料在頁面中
+            show_counter_delete(counter);
+        })
+        .catch(err => {
+            console.error(err);
+        });
+}
+
+// （刪除）呈現「行事曆刪除資料」在頁面中
+function show_counter_delete(counter) {
+    // 建立行事曆的 HTML 內容
+    const html = `
+    <form id="delete-counter-form">
+        <table>
+            <tbody>
+                <tr>
+                    <th>名子</th>
+                    <td><input type="text" id="cname" name="cname" value="${counter.cName}" disabled></td>
+                </tr>
+                <tr>
+                    <th>信箱</th>                    
+                    <td><input type="text" id="cmail" name="cmail" value="${counter.cmail}" disabled></td>
+                </tr>
+                <tr>
+                    <th>電話</th>                    
+                    <td><input type="text" id="cphone" name="cphone" value="${counter.cphone}" disabled></td>
+                </tr>
+                <tr>
+                    <th>類型</th>
+                    <td><input type="text" id="ctype" name="ctype" value="${counter.ctype}" disabled></td>
+                </tr>
+                <tr>
+                    <th>樓層</th>                    
+                    <td><input type="text" id="cfl" name="cfl" value="${counter.cfl}" disabled></td>
+                </tr>     
+            </tbody>
+        </table>
+        <button type="submit" class='deleteBtn'>確認刪除</button>
+     </form>
+    `;
+    // 切換功能區域的內容
+    switchContent('行事曆刪除資料', html);
+
+    const form = document.querySelector('#delete-counter-form');
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        // 以 delete 方式連線至伺服端刪除資料
+        axiosInstance.delete(`Counter/${counter.cid}`)
+            .then(res => {
+                window.alert('行事曆刪除成功！');
+                counterBrief();     // 重新列出最新的資料清單
+            })
+            .catch(err => {
+                console.error(err);
+            });
+    });
+}
+
 
 function memberBrief() {
     // 取得行事曆資料
@@ -313,8 +447,8 @@ function show_member_brief(member) {
                         <td>${item.mstate}</td>
                         <td>${item.mphone}</td>
                         <td>
-                            <button class='updateBtn' onClick="update_member(${item.cid})">修改</button>
-                            <button class='deleteBtn' onClick="delete_member(${item.cid})">刪除</button>
+                            <button class='updateBtn' onClick="update_member(${item.mid})">修改</button>
+                            <button class='deleteBtn' onClick="delete_member(${item.mid})">刪除</button>
                         </td>
                     </tr>
                 `).join('')}
@@ -366,7 +500,6 @@ function show_member_add() {
         const formData = new FormData(form);
         // 將表單的資料轉換成 json 格式
         const jsonData = form_data_to_json(formData);
-        console.log(jsonData);
         // 以 post 方式連線至伺服端新增資料
         axiosInstance.post(`Member`, jsonData)
             .then(res => {
@@ -378,3 +511,140 @@ function show_member_add() {
             });
     });
 }
+
+// （修改）點選行事曆的「修改」按鈕時，呼叫此函式
+function update_member(mid) {
+    // 取得行事曆資料
+    axiosInstance.get(`Member/${mid}`)
+        .then(res => {
+            const member = res.data.member;
+            // 呼叫函式去呈現行事曆修改資料在頁面中
+            show_member_update(member);
+        })
+        .catch(err => {
+            console.error(err);
+        });
+}
+
+// （修改）呈現「行事曆修改資料」在頁面中
+function show_member_update(member) {
+    // 建立行事曆的 HTML 內容
+    const html = `
+    <form id="update-member-form">
+        <table>
+            <tbody>
+                <tr>
+                    <th>名子</th>
+                    <td><input type="text" id="mname" name="mname" value="${member.mName}"></td>
+                </tr>
+                <tr>
+                    <th>性別</th>
+                    <td>
+                        <input type="radio" id="M" name="msex" value='M' ${member.msex === 'M' ? 'checked' : ''}>
+                        <label for="M">M</label>
+                        <input type="radio" id="F" name="msex" value='F' ${member.msex === 'F' ? 'checked' : ''}>
+                        <label for="F">F</label>
+                    </td>
+                </tr>
+                <tr>
+                    <th>住址</th>                    
+                    <td><input type="text" id="mstate" name="mstate" value="${member.mstate}"></td>
+                </tr>
+                <tr>
+                    <th>電話</th>
+                    <td><input type="text" id="mphone" name="mphone" value="${member.mphone}"></td>
+                </tr>
+                
+            </tbody>
+        </table>
+        <button type="submit" class='updateBtn'>確認修改</button>
+        </form>
+    `;
+    // 切換功能區域的內容
+    switchContent('行事曆修改資料', html);
+
+    const form = document.querySelector('#update-member-form');
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        // 取得表單（form）所填寫的資料
+        const formData = new FormData(form);
+        // 將表單的資料轉換成 json 格式
+        const jsonData = form_data_to_json(formData);
+        // 以 put 方式連線至伺服端修改資料
+        axiosInstance.put(`Member/${member.mid}`, jsonData)
+            .then(res => {
+                window.alert('行事曆修改成功！');
+                memberBrief();     // 重新列出最新的資料清單
+            })
+            .catch(err => {
+                console.error(err);
+            });
+    });
+}
+
+// （刪除）點選行事曆的「刪除」按鈕時，呼叫此函式
+function delete_member(mid) {
+    // 取得行事曆資料
+    axiosInstance.get(`Member/${mid}`)
+        .then(res => {
+            const member = res.data.member;
+            // 呼叫函式去呈現行事曆刪除資料在頁面中
+            show_member_delete(member);
+        })
+        .catch(err => {
+            console.error(err);
+        });
+}
+
+// （刪除）呈現「行事曆刪除資料」在頁面中
+function show_member_delete(member) {
+    // 建立行事曆的 HTML 內容
+    const html = `
+    <form id="delete-member-form">
+        <table>
+            <tbody>
+                <tr>
+                    <th>名子</th>
+                    <td><input type="text" id="mname" name="mname" value="${member.mName}" disabled></td>
+                </tr>
+                <tr>
+                    <th>性別</th>
+                    <td>
+                        <input type="radio" id="M" name="msex" value='M' ${member.msex === 'M' ? 'checked' : ''} disabled>
+                        <label for="M">M</label>
+                        <input type="radio" id="F" name="msex" value='F' ${member.msex === 'F' ? 'checked' : ''} disabled>
+                        <label for="F">F</label>
+                    </td>
+                </tr>
+                <tr>
+                    <th>住址</th>                    
+                    <td><input type="text" id="mstate" name="mstate" value="${member.mstate}" disabled></td>
+                </tr>
+                <tr>
+                    <th>電話</th>
+                    <td><input type="text" id="mphone" name="mphone" value="${member.mphone}" disabled></td>
+                </tr>
+                
+            </tbody>
+        </table>
+        <button type="submit" class='deleteBtn'>確認刪除</button>
+     </form>
+    `;
+    // 切換功能區域的內容
+    switchContent('行事曆刪除資料', html);
+
+    const form = document.querySelector('#delete-member-form');
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        // 以 delete 方式連線至伺服端刪除資料
+        axiosInstance.delete(`Member/${member.mid}`)
+            .then(res => {
+                window.alert('行事曆刪除成功！');
+                memberBrief();     // 重新列出最新的資料清單
+            })
+            .catch(err => {
+                console.error(err);
+            });
+    });
+}
+
