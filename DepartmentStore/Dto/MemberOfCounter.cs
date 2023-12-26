@@ -7,6 +7,7 @@ namespace DepartmentStore.Dto
         public Guid Cid { get; set; }
         [Required]
         public string Cname { get; set; }
+
         public List<String> Member { get; set; } = new List<String>();
     }
 }

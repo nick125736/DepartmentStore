@@ -37,17 +37,36 @@ namespace DepartmentStore.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
-        [HttpGet("CounterDetailsForMember/{mid}")]
-        public async Task<IActionResult> GetCounterDetailsByMemberId(int id)
+        [HttpGet("CounterForMemeber/{mid}")]
+        public async Task<IActionResult> GetCounterByMemberId(int mid)
         {
             try
             {
                 // 取得指定 id 的會員資料
-                var counterDetails = await _cross.GetCounterDetailsByMemberId(id);
+                var member = await _cross.GetCounterByMemberId(mid);
                 return Ok(new
                 {
                     Success = true,
-                    Message = "取得指定 id 會員的所有行事曆詳細資料成功",
+                    Message = "輸出member的id,name且對應counter",
+                    member
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+        [HttpGet("CounterDetailsForMember/{mid}")]
+        public async Task<IActionResult> GetCounterDetailsByMemberId(int mid)
+        {
+            try
+            {
+                // 取得指定 id 的會員資料
+                var counterDetails = await _cross.GetCounterDetailsByMemberId(mid);
+                return Ok(new
+                {
+                    Success = true,
+                    Message = "取得指定 id 會員的所有店鋪詳細資料成功",
                     Data = counterDetails
                 });
             }
@@ -57,16 +76,16 @@ namespace DepartmentStore.Controllers
             }
         }
         [HttpGet("MemberDetailsForCounter/{cid}")]
-        public async Task<IActionResult> GetMemberDetailsByCounterId(Guid id)
+        public async Task<IActionResult> GetMemberDetailsByCounterId(Guid cid)
         {
             try
             {
                 // 取得指定 id 的行事曆資料
-                var memberDetails = await _cross.GetMemberDetailsByCounterId(id);
+                var memberDetails = await _cross.GetMemberDetailsByCounterId(cid);
                 return Ok(new
                 {
                     Success = true,
-                    Message = "取得指定 id 行事曆的所有會員詳細資料成功",
+                    Message = "取得指定 id 店鋪的所有會員詳細資料成功",
                     Data = memberDetails
                 });
             }

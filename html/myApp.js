@@ -22,7 +22,10 @@ function handleNavClick(e) {
     // 切換功能區域的內容
     if (e.target.textContent === '關於我們') {    
         const html = `
-            <img src="https://ec051.so-buy.com/ezfiles/863/1863/plugin/ec/pictures/316/m/mczh-tw800x800_small100793.jpg" alt="alternatetext">
+            <img src="https://ec051.so-buy.com/ezfiles/863/1863/plugin/ec/pictures/316/m/mczh-tw800x800_small100793.jpg" alt="alternatetext" weight="720px" height="720px">
+            <img src="https://img.league-funny.com/imgur/170325577164_n.jpg" alt="alternatetext">
+            <img src="https://megapx-assets.dcard.tw/images/699749fd-198c-4ec8-ab96-681c49813f23/1280.jpeg" alt="alternatetext">
+            <iframe width="720" height="720" src="https://www.youtube.com/embed/Cjx8507XQfQ?si=7JoeO9RFa-8Bk83s" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
         `;
         switchContent('', html);
     }
@@ -190,7 +193,7 @@ function show_counter_brief(counter) {
     // 行事曆的簡易資料及新增、修改、刪除按鈕
     const html = `
         <div class="button-container">
-            <button class='createBtn' onclick="add_counter()">新增行事曆</button>
+            <button class='createBtn' onclick="add_counter()">新增店鋪</button>
         </div>
         <table>
             <thead>
@@ -223,7 +226,7 @@ function show_counter_brief(counter) {
         </table>
     `;
     // 切換功能區域的內容
-    switchContent('行事曆簡易資料', html);
+    switchContent('店鋪簡易資料', html);
 }
 
 // （新增）點選行事曆的「新增」按鈕時，呼叫此函式
@@ -253,7 +256,7 @@ function show_counter_add() {
     </form>
     `;
     // 切換功能區域的內容
-    switchContent('新增行事曆資料', html);
+    switchContent('新增店鋪資料', html);
 
     const form = document.querySelector('#add-counter-form');
     form.addEventListener('submit', e => {
@@ -266,7 +269,7 @@ function show_counter_add() {
         // 以 post 方式連線至伺服端新增資料
         axiosInstance.post('Counter', jsonData)
             .then(res => {
-                window.alert('行事曆新增成功！');
+                window.alert('店鋪新增成功！');
                 counterBrief();     // 重新列出最新的資料清單
             })
             .catch(err => {
@@ -321,7 +324,7 @@ function show_counter_update(counter) {
         </form>
     `;
     // 切換功能區域的內容
-    switchContent('行事曆修改資料', html);
+    switchContent('店鋪修改資料', html);
 
     const form = document.querySelector('#update-counter-form');
     form.addEventListener('submit', e => {
@@ -333,7 +336,7 @@ function show_counter_update(counter) {
         // 以 put 方式連線至伺服端修改資料
         axiosInstance.put(`Counter/${counter.cid}`, jsonData)
             .then(res => {
-                window.alert('行事曆修改成功！');
+                window.alert('店鋪修改成功！');
                 counterBrief();     // 重新列出最新的資料清單
             })
             .catch(err => {
@@ -389,7 +392,7 @@ function show_counter_delete(counter) {
      </form>
     `;
     // 切換功能區域的內容
-    switchContent('行事曆刪除資料', html);
+    switchContent('店鋪刪除資料', html);
 
     const form = document.querySelector('#delete-counter-form');
     form.addEventListener('submit', e => {
@@ -397,7 +400,7 @@ function show_counter_delete(counter) {
         // 以 delete 方式連線至伺服端刪除資料
         axiosInstance.delete(`Counter/${counter.cid}`)
             .then(res => {
-                window.alert('行事曆刪除成功！');
+                window.alert('店鋪刪除成功！');
                 counterBrief();     // 重新列出最新的資料清單
             })
             .catch(err => {
@@ -425,7 +428,7 @@ function show_member_brief(member) {
     // 行事曆的簡易資料及新增、修改、刪除按鈕
     const html = `
         <div class="button-container">
-            <button class='createBtn' onclick="add_member()">新增行事曆</button>
+            <button class='createBtn' onclick="add_member()">新增會員</button>
         </div>
         <table>
             <thead>
@@ -456,7 +459,7 @@ function show_member_brief(member) {
         </table>
     `;
     // 切換功能區域的內容
-    switchContent('行事曆簡易資料', html);
+    switchContent('會員簡易資料', html);
 }
 
 // （新增）點選行事曆的「新增」按鈕時，呼叫此函式
@@ -491,7 +494,7 @@ function show_member_add() {
     </form>
     `;
     // 切換功能區域的內容
-    switchContent('新增行事曆資料', html);
+    switchContent('新增會員資料', html);
 
     const form = document.querySelector('#add-member-form');
     form.addEventListener('submit', e => {
@@ -503,7 +506,7 @@ function show_member_add() {
         // 以 post 方式連線至伺服端新增資料
         axiosInstance.post(`Member`, jsonData)
             .then(res => {
-                window.alert('行事曆新增成功！');
+                window.alert('會員新增成功！');
                 memberBrief();     // 重新列出最新的資料清單
             })
             .catch(err => {
@@ -561,7 +564,7 @@ function show_member_update(member) {
         </form>
     `;
     // 切換功能區域的內容
-    switchContent('行事曆修改資料', html);
+    switchContent('會員修改資料', html);
 
     const form = document.querySelector('#update-member-form');
     form.addEventListener('submit', e => {
@@ -573,7 +576,7 @@ function show_member_update(member) {
         // 以 put 方式連線至伺服端修改資料
         axiosInstance.put(`Member/${member.mid}`, jsonData)
             .then(res => {
-                window.alert('行事曆修改成功！');
+                window.alert('會員修改成功！');
                 memberBrief();     // 重新列出最新的資料清單
             })
             .catch(err => {
@@ -631,7 +634,7 @@ function show_member_delete(member) {
      </form>
     `;
     // 切換功能區域的內容
-    switchContent('行事曆刪除資料', html);
+    switchContent('會員刪除資料', html);
 
     const form = document.querySelector('#delete-member-form');
     form.addEventListener('submit', e => {
@@ -639,7 +642,7 @@ function show_member_delete(member) {
         // 以 delete 方式連線至伺服端刪除資料
         axiosInstance.delete(`Member/${member.mid}`)
             .then(res => {
-                window.alert('行事曆刪除成功！');
+                window.alert('會員刪除成功！');
                 memberBrief();     // 重新列出最新的資料清單
             })
             .catch(err => {
@@ -648,3 +651,226 @@ function show_member_delete(member) {
     });
 }
 
+// 「跨表格簡易存取」的首頁
+function crossTableBrief() {
+    const html = `
+        <div class="button-container">
+            <button class='btnMenu2' onclick="membersForCounter()">參與店鋪的會員</button>
+            <button class='btnMenu2' onclick="countersForMember()">會員所參與的店鋪</button>
+        </div>
+    `;
+    // 切換功能區域的內容
+    switchContent('跨表格簡易存取', html);
+}
+
+// 點選「參與行事曆的會員」功能時，呼叫此函式
+function membersForCounter() {
+    // 取得行事曆資料
+    axiosInstance.get('Counter')
+        .then(res => {
+            const counter = res.data.counters;
+            // 呼叫函式去呈現行事曆簡易資料在頁面中
+            show_members_for_counter(counter);
+        })
+        .catch(err => {
+            console.error(err);
+        });
+}
+
+// 呈現「行事曆資料及參與會員按鈕」在頁面中
+function show_members_for_counter(counter) {
+    // 行事曆資料及參與會員按鈕
+    const html = `
+        <table>
+            <thead>
+                <tr>
+                    <th>編號</th>
+                    <th>名子</th>
+                    <th>信箱</th>
+                    <th>電話</th>
+                    <th>類型</th>
+                    <th>樓層</th>
+                    <th>操作功能</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${counter.map(item => `
+                    <tr>
+                        <td>${item.cid}</td>
+                        <td>${item.cName}</td>
+                        <td>${item.cmail}</td>
+                        <td>${item.cphone}</td>
+                        <td>${item.ctype}</td>
+                        <td>${item.cfl}</td>
+                        <td>
+                            <button class='doubleLayer' onClick="show_join_members('${item.cid}')">參與的會員</button>
+                        </td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+    `;
+    // 切換功能區域的內容
+    switchContent('參與行事曆的會員', html);
+}
+
+// 點選「參與的會員」的按鈕時，呼叫此函式
+function show_join_members(cid) {
+    // 取得行事曆及參與的會員資料
+    axiosInstance.get(`Cross/MemberForCounter/${cid}`)
+        .then(res => {
+            const counter = res.data.counter;
+            // 呼叫函式去呈現行事曆及參與的會員資料在頁面中
+            show_join_members_info(counter);
+        })
+        .catch(err => {
+            console.error(err);
+        });
+}
+
+// 顯示「行事曆及參與的會員」資料
+function show_join_members_info(counter) {
+    const memberList = counter.member;
+    // 如果有多個會員，則用逗號隔開
+    if (!memberList) {
+        memberList.join(',');
+    }
+
+    const html = `
+        <table>
+            <tbody>
+                <tr>
+                    <th>編號</th>
+                    <td><input type="text" id="cid" name="cid" value="${counter.cid}" disabled></td>
+                </tr>
+                <tr>
+                    <th>名子</th>
+                    <td><input type="text" id="cname" name="cname" value="${counter.cname}" disabled></td>
+                </tr>
+                <tr>
+                    <th>參與會員</th>                    
+                    <td><input type="text" id="members" name="members" value="${memberList}" disabled></td>
+                </tr>              
+            </tbody>
+        </table>
+        <div class="button-container">
+            <button id="closeButton">關閉</button>
+        </div>
+    `;
+
+    // 切換功能區域的內容
+    switchContent('行事曆的會員列表', html);
+    // 取得關閉按鈕
+    const closeButton = document.getElementById('closeButton');
+
+    // 設置關閉按鈕的功能
+    closeButton.addEventListener('click', function () {
+        // 重新列出最新的行事曆清單
+        membersForCounter();
+    });
+}
+
+// 點選「參與行事曆的會員」功能時，呼叫此函式
+function countersForMember() {
+    // 取得行事曆資料
+    axiosInstance.get('Member')
+        .then(res => {
+            const member = res.data.members;
+            // 呼叫函式去呈現行事曆簡易資料在頁面中
+            show_counters_for_member(member);
+        })
+        .catch(err => { 
+            console.error(err);
+        });
+}
+
+// 呈現「行事曆資料及參與會員按鈕」在頁面中
+function show_counters_for_member(member) {
+    // 行事曆資料及參與會員按鈕
+    const html = `
+        <table>
+            <thead>
+                <tr>
+                    <th>編號</th>
+                    <th>名子</th>
+                    <th>性別</th>
+                    <th>住址</th>
+                    <th>電話</th>
+                    <th>操作功能</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${member.map(item => `
+                    <tr>
+                        <td>${item.mid}</td>
+                        <td>${item.mName}</td>
+                        <td>${item.msex}</td>
+                        <td>${item.mstate}</td>
+                        <td>${item.mphone}</td>
+                        <td>
+                            <button class='doubleLayer' onClick="show_join_counters(${item.mid})">參與的會員</button>
+                        </td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+    `;
+    // 切換功能區域的內容
+    switchContent('參與行事曆的會員', html);
+}
+
+// 點選「參與的會員」的按鈕時，呼叫此函式
+function show_join_counters(mid) {
+    // 取得行事曆及參與的會員資料
+    axiosInstance.get(`Cross/CounterForMemeber/${mid}`)
+        .then(res => {
+            const member = res.data.member;
+            // 呼叫函式去呈現行事曆及參與的會員資料在頁面中
+            show_join_counter_info(member);
+        })
+        .catch(err => {
+            console.error(err);
+        });
+}
+
+// 顯示「行事曆及參與的會員」資料
+function show_join_counter_info(member) {
+    const counterList = member.counter;
+    // 如果有多個會員，則用逗號隔開
+    if (!counterList) {
+        counterList.join(',');
+    }
+
+    const html = `
+        <table>
+            <tbody>
+                <tr>
+                    <th>編號</th>
+                    <td><input type="text" id="mid" name="mid" value="${member.mid}" disabled></td>
+                </tr>
+                <tr>
+                    <th>標題</th>
+                    <td><input type="text" id="mname" name="mname" value="${member.mname}" disabled></td>
+                </tr>
+                <tr>
+                    <th>參與會員</th>                    
+                    <td><input type="text" id="counters" name="counters" value="${counterList}" disabled></td>
+                </tr>              
+            </tbody>
+        </table>
+        <div class="button-container">
+            <button id="closeButton">關閉</button>
+        </div>
+    `;
+
+    // 切換功能區域的內容
+    switchContent('行事曆的會員列表', html);
+    // 取得關閉按鈕
+    const closeButton = document.getElementById('closeButton');
+
+    // 設置關閉按鈕的功能
+    closeButton.addEventListener('click', function () {
+        // 重新列出最新的行事曆清單
+        countersForMember();
+    });
+}

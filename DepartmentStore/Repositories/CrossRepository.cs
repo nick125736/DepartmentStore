@@ -17,7 +17,7 @@ namespace DepartmentStore.Repositories
         // 查詢 Member 和他/她參與的所有 Calendars 資料（依指定 id）
         public async Task<CounterOfMember> GetCounterByMemberId(int id)
         {
-            string sqlQuery = "SELECT Mid, Mname,FROM Member WHERE Mid = @Id;" +
+            string sqlQuery = "SELECT Mid, Mname FROM Member WHERE Mid = @Id;" +
             "SELECT C.Cname FROM Counter C, Business B " +
            "WHERE B.Mid = @Id AND C.Cid = B.Cid;";
             using (var connection = _dbContext.CreateConnection())
