@@ -2,6 +2,7 @@
 const content = document.querySelector('#content');
 // 取得頁面中用來導航的元素
 const nav = document.querySelector('nav');
+
 // 綁定導航元素的 click 事件處理函式
 nav.addEventListener('click', handleNavClick);
 
@@ -37,6 +38,11 @@ function handleNavClick(e) {
         crossTableBrief();
     } else if (e.target.textContent === '跨表格雙層折疊') {
         crossTableDoubleLayer();
+    } else if (e.target.textContent === '好欸') {
+        const html = `
+            a
+        `;
+        switchContent('',html)
     }
 }
 
@@ -874,3 +880,264 @@ function show_join_counter_info(member) {
         countersForMember();
     });
 }
+
+// 「跨表格雙層折疊」的首頁
+function crossTableDoubleLayer() {
+    const html = `
+        <div class="button-container">
+            <button class='btnMenu2' onclick="memberDetailsForCounter()">參與商店的會員詳細資料</button>
+            <button class='btnMenu2' onclick="counterDetailsForMember()">會員所參與的商店詳細資料</button>
+        </div>
+    `;
+    // 切換功能區域的內容
+    switchContent('跨表格雙層折疊', html);
+}
+
+// 點選「參與行事曆的會員詳細資料」按鈕時，呼叫此函式
+function memberDetailsForCounter() {
+    // 取得行事曆資料
+    axiosInstance.get('Counter')
+        .then(res => {
+            const counter = res.data.counters;
+            // 此函式呈現行事曆簡易資料在頁面中
+            show_counter_list(counter);
+        })
+        .catch(err => {
+            console.error(err);
+        });
+}
+
+// 呈現「行事曆簡易資料」在頁面中
+function show_counter_list(counter) {
+    // 行事曆簡易資料清單
+    const html = `
+        <table>
+            <thead>
+                <tr>
+                    <th>名子</th>
+                    <th>信箱</th>
+                    <th>電話</th>
+                    <th>類型</th>
+                    <th>樓層</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${counter.map(item => `
+                    <tr onClick="show_all_members_for_counter(event, '${item.cid}')">
+                        <td>${item.cName}</td>
+                        <td>${item.cmail}</td>
+                        <td>${item.cphone}</td>
+                        <td>${item.ctype}</td>
+                        <td>${item.cfl}</td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+    `;
+    // 切換功能區域的內容
+    switchContent('點擊行事曆可查看參與的會員詳細資料', html);
+}
+
+// 點選「某一筆行事曆」時，呼叫此函式
+function show_all_members_for_counter(event, cid) {
+    // 取得參與被點選行事曆的會員資料
+    axiosInstance.get(`Cross/MemberDetailsForCounter/${cid}`)
+        .then(res => {
+            const counter = res.data.data;
+            // 此函式呈現參與被點選行事曆的所有會員詳細資料
+            show_member_details_info(event, counter);
+        })
+        .catch(err => {
+            console.error(err);
+        });
+}
+
+// 顯示「參與被點選行事曆的所有會員詳細資料」
+function show_member_details_info(event, counter) {
+    const row = event.target.parentElement;
+
+    let nextRow = null;
+    // 判斷是否有下一個元素節點
+    if (row.nextElementSibling)
+        nextRow = row.nextElementSibling.children[0];
+
+    // 如果有下一個元素節點，且該元素節點有包含 class 名稱為 subtable
+    if (nextRow && nextRow.classList.contains('subtable')) {
+        // 底下的判斷式可用來判斷並切換是否要隱藏或顯示該元素節點
+        // 如果該元素節點有包含 class 名稱為 hidden
+        if (nextRow.classList.contains('hidden')) {
+            // 則移除該元素節點的 hidden class（亦即不隱藏）
+            nextRow.classList.remove('hidden');
+        } else {
+            // 否則，加入 hidden class 至該元素節點 （亦即隱藏）
+            nextRow.classList.add('hidden');
+        }
+    }
+    else {
+        // 取得參與被點選行事曆的會員資料
+        const memberList = counter.members;
+        // 至少有一個會員參與此行事曆
+        if (memberList.length > 0) {
+            const html = `<td colspan="4" class="subtable">
+                    <table style='width:80%'>
+                        <thead >
+                            <tr>
+                                <th class='nested'>姓名</th>
+                                <th class='nested'>性別</th>
+                                <th class='nested'>住址</th>
+                                <th class='nested'>電話</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${memberList.map(item => `
+                                <tr>
+                                    <td>${item.mName}</td>
+                                    <td>${item.msex}</td>
+                                    <td>${item.mstate}</td>
+                                    <td>${item.mphone}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                    </td>
+                `;
+
+            // 在被點選行事曆的下一個元素節點後面插入 html 內容
+            row.insertAdjacentHTML('afterend', html);
+        }
+        else { // 如果沒有會員參與此行事曆
+            let html2 = `<td colspan="4" class="subtable">
+                    <label style='color:red'>
+                        沒有任何會員參與此行事曆
+                    </label>
+                </td>
+                `;
+            row.insertAdjacentHTML('afterend', html2);
+        }
+    }
+}
+
+// 點選「參與行事曆的會員詳細資料」按鈕時，呼叫此函式
+function counterDetailsForMember() {
+    // 取得行事曆資料
+    axiosInstance.get('Member')
+        .then(res => {
+            const member = res.data.members;
+            // 此函式呈現行事曆簡易資料在頁面中
+            show_member_list(member);
+        })
+        .catch(err => {
+            console.error(err);
+        });
+}
+
+// 呈現「行事曆簡易資料」在頁面中
+function show_member_list(member) {
+    // 行事曆簡易資料清單
+    const html = `
+        <table>
+            <thead>
+                <tr>
+                    <th>名子</th>
+                    <th>性別</th>
+                    <th>住址</th>
+                    <th>電話</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${member.map(item => `
+                    <tr onClick="show_all_counters_for_member(event, ${item.mid})">
+                        <td>${item.mName}</td>
+                        <td>${item.msex}</td>
+                        <td>${item.mstate}</td>
+                        <td>${item.mphone}</td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+    `;
+    // 切換功能區域的內容
+    switchContent('點擊行事曆可查看參與的會員詳細資料', html);
+}
+
+// 點選「某一筆行事曆」時，呼叫此函式
+function show_all_counters_for_member(event, mid) {
+    // 取得參與被點選行事曆的會員資料
+    axiosInstance.get(`Cross/CounterDetailsForMember/${mid}`)
+        .then(res => {
+            const member = res.data.data;
+            // 此函式呈現參與被點選行事曆的所有會員詳細資料
+            show_counter_details_info(event, member);
+        })
+        .catch(err => {
+            console.error(err);
+        });
+}
+
+// 顯示「參與被點選行事曆的所有會員詳細資料」
+function show_counter_details_info(event, member) {
+    const row = event.target.parentElement;
+
+    let nextRow = null;
+    // 判斷是否有下一個元素節點
+    if (row.nextElementSibling)
+        nextRow = row.nextElementSibling.children[0];
+
+    // 如果有下一個元素節點，且該元素節點有包含 class 名稱為 subtable
+    if (nextRow && nextRow.classList.contains('subtable')) {
+        // 底下的判斷式可用來判斷並切換是否要隱藏或顯示該元素節點
+        // 如果該元素節點有包含 class 名稱為 hidden
+        if (nextRow.classList.contains('hidden')) {
+            // 則移除該元素節點的 hidden class（亦即不隱藏）
+            nextRow.classList.remove('hidden');
+        } else {
+            // 否則，加入 hidden class 至該元素節點 （亦即隱藏）
+            nextRow.classList.add('hidden');
+        }
+    }
+    else {
+        // 取得參與被點選行事曆的會員資料
+        const counterList = member.counters;
+        // 至少有一個會員參與此行事曆
+        if (counterList.length > 0) {
+            const html = `<td colspan="4" class="subtable">
+                    <table style='width:80%'>
+                        <thead >
+                            <tr>
+                                <th class='nested'>姓名</th>
+                                <th class='nested'>信箱</th>
+                                <th class='nested'>電話</th>
+                                <th class='nested'>類型</th>
+                                <th class='nested'>樓層</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${counterList.map(item => `
+                                <tr>
+                                    <td>${item.cName}</td>
+                                    <td>${item.cmail}</td>
+                                    <td>${item.cphone}</td>
+                                    <td>${item.ctype}</td>
+                                    <td>${item.cfl}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                    </td>
+                `;
+
+            // 在被點選行事曆的下一個元素節點後面插入 html 內容
+            row.insertAdjacentHTML('afterend', html);
+        }
+        else { // 如果沒有會員參與此行事曆
+            let html2 = `<td colspan="4" class="subtable">
+                    <label style='color:red'>
+                        沒有任何會員參與此行事曆
+                    </label>
+                </td>
+                `;
+            row.insertAdjacentHTML('afterend', html2);
+        }
+    }
+}
+
