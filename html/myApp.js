@@ -39,10 +39,7 @@ function handleNavClick(e) {
     } else if (e.target.textContent === '跨表格雙層折疊') {
         crossTableDoubleLayer();
     } else if (e.target.textContent === '好欸') {
-        const html = `
-            a
-        `;
-        switchContent('',html)
+        yestoyoooo();
     }
 }
 
@@ -56,9 +53,9 @@ const axiosInstance = axios.create({
 // 單純顯示資料
 function pureDisplay() {
     const html = `  
-    <div class="button-container">
-        <button class="btnMenu" onclick="counterFull()">Counter完整資料</button>
-        <button class="btnMenu" onclick="memberFull()">Member完整資料</button>
+    <div class="button-container ">
+        <button class="btnMenu " onclick="counterFull()">Counter完整資料</button>
+        <button class="btnMenu " onclick="memberFull()">Member完整資料</button>
     </div>
     `;
     // 切換功能區域的內容
@@ -162,10 +159,10 @@ function crudOperate() {
     </div>
     `;
     // 切換功能區域的內容
-    switchContent('單純顯示資料的按鈕', html);
+    switchContent('顯示資料的CRUD按鈕', html);
 }
 
-// 將 form data 轉成 json
+// 將 form data 轉成 jsons
 function form_data_to_json(formData) {
     let object = {};    // 宣告一個空物件
     // 逐一取出 form 之中各項的 key 和 value，記錄至物件中
@@ -1141,3 +1138,39 @@ function show_counter_details_info(event, member) {
     }
 }
 
+function yestoyoooo() {
+    const html = `  
+        <div class="cube" id="to">
+            <div class="topD" ></div>
+                <div>
+                    <span style="--i:0"></span>
+                    <span style="--i:1"></span>
+                    <span style="--i:2"></span>
+                    <span style="--i:3"></span>
+                </div>
+
+                <div class="cube2">
+                    <div>
+                        <span style="--i:0"></span>
+                        <span style="--i:1"></span>
+                        <span style="--i:2"></span>
+                        <span style="--i:3"></span>
+                    </div>
+
+                <div class="cube3">
+                    <div class="top3"></div>
+                        <div>
+                            <span style="--i:0"></span>
+                            <span style="--i:1"></span>
+                            <span style="--i:2"></span>
+                            <span style="--i:3"></span>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    switchContent('', html);
+}
